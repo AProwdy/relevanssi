@@ -318,6 +318,10 @@ function relevanssi_add_admin_scripts( $hook ) {
 		'dashboard_page_relevanssi/relevanssi',
 		'dashboard_page_relevanssi_admin_search',
 		'dashboard_page_relevanssi_user_searches',
+		// AP-relevanssi fork hooks
+		'toplevel_page_AP-relevanssi/relevanssi',
+		'settings_page_AP-relevanssi/relevanssi',
+		'dashboard_page_AP-relevanssi/relevanssi',
 	);
 	/**
 	 * Filters the hooks where Relevanssi scripts are enqueued.
@@ -335,7 +339,7 @@ function relevanssi_add_admin_scripts( $hook ) {
 	}
 
 	wp_enqueue_style( 'wp-color-picker' );
-	wp_enqueue_script( 'relevanssi_admin_js', $plugin_dir_url . 'lib/admin_scripts.js', array( 'wp-color-picker' ), $relevanssi_variables['plugin_version'], true );
+	wp_enqueue_script( 'relevanssi_admin_js', $plugin_dir_url . 'lib/admin_scripts.js', array( 'jquery', 'wp-color-picker' ), $relevanssi_variables['plugin_version'], true );
 	if ( ! RELEVANSSI_PREMIUM ) {
 		wp_enqueue_script( 'relevanssi_admin_js_free', $plugin_dir_url . 'lib/admin_scripts_free.js', array( 'relevanssi_admin_js' ), $relevanssi_variables['plugin_version'], true );
 	}
