@@ -1,2 +1,27 @@
-sync_svn.sh
+# Dependencies
+/vendor/
+
+# Build artifacts
+/*.zip
+/build/
+
+# OS generated files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Scripts
+sync_svn.sh
