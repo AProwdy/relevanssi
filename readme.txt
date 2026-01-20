@@ -1,11 +1,11 @@
-=== Relevanssi - A Better Search ===
-Contributors: msaari
+=== AP Relevanssi - A Better Search ===
+Contributors: msaari, apdevelopment
 Donate link: https://www.relevanssi.com/buy-premium/
 Tags: search, relevance, better search, product search, woocommerce search
 Requires at least: 4.9
 Tested up to: 6.9
 Requires PHP: 7.1
-Stable tag: 4.26.0
+Stable tag: 4.26.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,6 +14,9 @@ Relevanssi replaces the default search with a partial-match search that sorts re
 == Description ==
 
 Relevanssi replaces the standard WordPress search with a better search engine, with lots of features and configurable options. You'll get better results, better presentation of results - your users will thank you.
+
+**Maintained by AP Development Team.**
+Original development by Mikko Saari.
 
 This is the free version of Relevanssi. There's also Relevanssi Premium, which has added features. For more information about Premium, see [Relevanssi.com](https://www.relevanssi.com/).
 

@@ -14,11 +14,20 @@
  * Prints out the redirects tab in Relevanssi settings.
  */
 function relevanssi_redirects_tab() {
+	$redirects = get_option( 'relevanssi_redirects', '' );
 	?>
 	<h2><?php esc_html_e( 'Redirects', 'relevanssi' ); ?></h2>
 
-	<p><?php esc_html_e( 'With Relevanssi Premium, you can set up redirects. These are keywords that automatically redirect the user to certain page, without going through the usual search process. For example, you could set it up so that all searches for "job" automatically lead to your "Careers" page.', 'relevanssi' ); ?></p>
-	<?php // Translators: %1$s starts the link, %2$s closes it. ?>
-	<p><?php printf( esc_html__( 'In order to access this and many other delightful Premium features, %1$sbuy Relevanssi Premium here%2$s.', 'relevanssi' ), '<a href="https://www.relevanssi.com/buy-premium/">', '</a>' ); ?></p>
+	<p><?php esc_html_e( 'Set up redirects. These are keywords that automatically redirect the user to certain page, without going through the usual search process.', 'relevanssi' ); ?></p>
+	
+	<table class="form-table">
+	<tr>
+		<th scope="row"><label for="relevanssi_redirects"><?php esc_html_e( 'Redirects', 'relevanssi' ); ?></label></th>
+		<td>
+			<textarea name="relevanssi_redirects" id="relevanssi_redirects" rows="10" cols="80"><?php echo esc_textarea( $redirects ); ?></textarea>
+			<p class="description"><?php esc_html_e( 'Format: keyword = URL. One per line. Example: job = /careers/', 'relevanssi' ); ?></p>
+		</td>
+	</tr>
+	</table>
 	<?php
 }

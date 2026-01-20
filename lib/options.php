@@ -101,6 +101,7 @@ function update_relevanssi_options( array $request ) {
 	relevanssi_process_trim_logs_option( $request );
 	relevanssi_process_cat_option( $request );
 	relevanssi_process_excat_option( $request );
+	relevanssi_process_redirects_options( $request );
 
 	// The values control the autoloading.
 	$options = array(
@@ -129,6 +130,7 @@ function update_relevanssi_options( array $request ) {
 		'relevanssi_index_comments'          => false,
 		'relevanssi_index_excerpt'           => false,
 		'relevanssi_index_image_files'       => true,
+		'relevanssi_index_sku'               => true,
 		'relevanssi_log_queries_with_ip'     => true,
 		'relevanssi_log_queries'             => true,
 		'relevanssi_omit_from_logs'          => true,
@@ -387,5 +389,21 @@ function relevanssi_process_excat_option( array $request ): bool {
 		return update_option( 'relevanssi_excat', '' );
 	}
 
+	return false;
+}
+
+/**
+ * Updates the redirects option.
+ *
+ * @param array $request The request array.
+ *
+ * @return boolean True, if update_option() succeeds, false otherwise.
+ */
+function relevanssi_process_redirects_options( array $request ): bool {
+	if ( isset( $request['relevanssi_redirects'] ) ) {
+		$redirects = $request['relevanssi_redirects'];
+		$redirects = strip_tags( $redirects );
+		return update_option( 'relevanssi_redirects', $redirects );
+	}
 	return false;
 }

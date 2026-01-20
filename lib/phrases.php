@@ -257,8 +257,9 @@ function relevanssi_generate_phrase_queries(
 
 				if ( strpos( implode( ' ', $custom_fields ), '%' ) ) {
 					// ACF repeater fields involved.
-					$custom_fields_regexp = str_replace( '%', '.+', implode( '|', $custom_fields ) );
-					$keys                 = "AND m.meta_key REGEXP ('$custom_fields_regexp')";
+					$custom_fields_escaped = array_map( 'esc_sql', $custom_fields );
+					$custom_fields_regexp  = str_replace( '%', '.+', implode( '|', $custom_fields_escaped ) );
+					$keys                  = "AND m.meta_key REGEXP ('$custom_fields_regexp')";
 				} else {
 					$custom_fields_escaped = implode(
 						"','",

@@ -298,3 +298,21 @@ function relevanssi_variation_post_ok( $ok, $post_id ) : bool {
 	}
 	return $ok;
 }
+
+if ( 'on' === get_option( 'relevanssi_index_sku' ) ) {
+	add_filter( 'relevanssi_index_custom_fields', 'relevanssi_woocommerce_add_sku' );
+}
+
+/**
+ * Adds the _sku custom field to the indexed fields.
+ *
+ * @param array $fields The list of custom fields to index.
+ *
+ * @return array The list of custom fields with _sku added.
+ */
+function relevanssi_woocommerce_add_sku( $fields ) {
+	if ( ! in_array( '_sku', $fields, true ) ) {
+		$fields[] = '_sku';
+	}
+	return $fields;
+}

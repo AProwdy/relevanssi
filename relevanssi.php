@@ -10,19 +10,19 @@
  * @see     https://www.relevanssi.com/
  *
  * @wordpress-plugin
- * Plugin Name: Relevanssi
+ * Plugin Name: AP Relevanssi
  * Plugin URI: https://www.relevanssi.com/
- * Description: This plugin replaces WordPress search with a relevance-sorting search.
- * Version: 4.26.0
- * Author: Mikko Saari
- * Author URI: http://www.mikkosaari.fi/
+ * Description: This plugin replaces WordPress search with a relevance-sorting search. Originally developed by Mikko Saari, customized by AP Development Team.
+ * Version: 4.26.1
+ * Author: AP Development Team
+ * Author URI: https://aquapremium.com.au
  * Text Domain: relevanssi
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 
 /**
- * Copyright 2025 Mikko Saari  (email: mikko@mikkosaari.fi)
+ * Copyright 2026 AP Development Team
  * This file is part of Relevanssi, a search plugin for WordPress.
  *
  * Relevanssi is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ $relevanssi_variables['database_version']                      = 9;
 $relevanssi_variables['file']                                  = __FILE__;
 $relevanssi_variables['plugin_dir']                            = plugin_dir_path( __FILE__ );
 $relevanssi_variables['plugin_basename']                       = plugin_basename( __FILE__ );
-$relevanssi_variables['plugin_version']                        = '4.26.0';
+$relevanssi_variables['plugin_version']                        = '4.26.1';
 
 require_once 'lib/admin-ajax.php';
 require_once 'lib/common.php';

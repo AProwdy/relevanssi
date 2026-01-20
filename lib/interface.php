@@ -233,7 +233,7 @@ function relevanssi_options_form() {
 			'name'     => __( 'Redirects', 'relevanssi' ),
 			'require'  => 'tabs/redirects-tab.php',
 			'callback' => 'relevanssi_redirects_tab',
-			'save'     => false,
+			'save'     => true,
 		),
 		array(
 			'slug'     => 'debugging',

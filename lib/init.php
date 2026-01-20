@@ -466,9 +466,6 @@ function relevanssi_action_links( $links ) {
 	$relevanssi_links = array(
 		'<a href="' . admin_url( 'options-general.php?page=' . $root . '/relevanssi.php' ) . '">' . __( 'Settings', 'relevanssi' ) . '</a>',
 	);
-	if ( ! RELEVANSSI_PREMIUM ) {
-		$relevanssi_links[] = '<a href="https://www.relevanssi.com/buy-premium/">' . __( 'Go Premium!', 'relevanssi' ) . '</a>';
-	}
 	return array_merge( $relevanssi_links, $links );
 }
 
@@ -561,4 +558,30 @@ function relevanssi_load_compatibility_code() {
 
 	// Always required, the functions check if TablePress is active.
 	require_once 'compatibility/tablepress.php';
+}
+
+add_action( 'template_redirect', 'relevanssi_do_redirect' );
+
+/**
+ * Handles the redirects.
+ */
+function relevanssi_do_redirect() {
+	if ( is_search() ) {
+		$query     = get_search_query();
+		$redirects = get_option( 'relevanssi_redirects' );
+		if ( ! empty( $redirects ) ) {
+			$lines = explode( "\n", $redirects );
+			foreach ( $lines as $line ) {
+				$parts = explode( '=', $line, 2 );
+				if ( count( $parts ) === 2 ) {
+					$keyword = trim( $parts[0] );
+					$url     = trim( $parts[1] );
+					if ( strcasecmp( $keyword, $query ) === 0 ) {
+						wp_redirect( $url );
+						exit;
+					}
+				}
+			}
+		}
+	}
 }

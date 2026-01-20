@@ -363,7 +363,7 @@ function relevanssi_admin_search_debugging_info( $query ) {
 			if ( empty( $value ) ) {
 				continue;
 			}
-			$result .= "<li>$key: $value</li>";
+			$result .= "<li>" . esc_html( $key ) . ": " . esc_html( $value ) . "</li>";
 		}
 	}
 	if ( ! empty( $query->tax_query ) ) {
@@ -376,7 +376,7 @@ function relevanssi_admin_search_debugging_info( $query ) {
 				if ( is_array( $value ) ) {
 					$value = relevanssi_flatten_array( $value );
 				}
-				$result .= "<li>$key: $value</li>";
+				$result .= "<li>" . esc_html( $key ) . ": " . esc_html( $value ) . "</li>";
 			}
 		}
 		$result .= '</ul></li>';

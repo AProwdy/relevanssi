@@ -377,6 +377,12 @@ function relevanssi_indexing_tab() {
 			<?php if ( is_plugin_active( 'woocommerce/woocommerce.php' ) ) : ?>
 				<?php // Translators: %1$s is the 'some' option and %2$s is '_sku'. ?>
 			<p class="description"><?php printf( esc_html__( 'If you want the SKU included, choose %1$s and enter %2$s. Also see the contextual help for more details.', 'relevanssi' ), esc_html( "'" . __( 'some', 'relevanssi' ) . "'" ), '<code>_sku</code>' ); ?></p>
+			<p>
+				<label for="relevanssi_index_sku">
+					<input type="checkbox" name="relevanssi_index_sku" id="relevanssi_index_sku" <?php checked( get_option( 'relevanssi_index_sku' ), 'on' ); ?> />
+					<?php esc_html_e( 'Index WooCommerce SKUs', 'relevanssi' ); ?>
+				</label>
+			</p>
 			<?php endif; ?>
 		</td>
 	</tr>
