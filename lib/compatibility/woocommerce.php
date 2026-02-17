@@ -14,6 +14,7 @@ add_filter( 'relevanssi_indexing_restriction', 'relevanssi_woocommerce_restricti
 add_filter( 'relevanssi_admin_search_blocked_post_types', 'relevanssi_woocommerce_admin_search_blocked_post_types' );
 add_filter( 'relevanssi_modify_wp_query', 'relevanssi_woocommerce_filters' );
 add_filter( 'relevanssi_post_ok', 'relevanssi_variation_post_ok', 10, 2 );
+add_filter( 'relevanssi_hits_filter', 'relevanssi_woocommerce_prioritize_in_stock_hits', 11, 2 );
 
 /**
  * This action solves the problems introduced by adjust_posts_count() in
@@ -297,6 +298,85 @@ function relevanssi_variation_post_ok( $ok, $post_id ) : bool {
 		return apply_filters( 'relevanssi_post_ok', $ok, $parent->ID );
 	}
 	return $ok;
+}
+
+/**
+ * Prioritizes in-stock WooCommerce products over out-of-stock products.
+ *
+ * Keeps the original relevance order inside each stock-status group, while
+ * moving out-of-stock products after in-stock products.
+ *
+ * @param array    $filter_data The Relevanssi filter data array.
+ * @param WP_Query $query       The current query object.
+ *
+ * @return array
+ */
+function relevanssi_woocommerce_prioritize_in_stock_hits( $filter_data, $query ) {
+	if ( ! function_exists( 'wc_get_product' ) ) {
+		return $filter_data;
+	}
+
+	if ( ! $query instanceof WP_Query || ! $query->is_search() ) {
+		return $filter_data;
+	}
+
+	$post_type = $query->get( 'post_type' );
+	if ( is_array( $post_type ) ) {
+		if ( ! in_array( 'product', $post_type, true ) && ! in_array( 'product_variation', $post_type, true ) ) {
+			return $filter_data;
+		}
+	} elseif ( ! empty( $post_type ) && 'product' !== $post_type && 'product_variation' !== $post_type ) {
+		return $filter_data;
+	}
+
+	$hits = isset( $filter_data[0] ) && is_array( $filter_data[0] ) ? $filter_data[0] : array();
+	if ( count( $hits ) < 2 ) {
+		return $filter_data;
+	}
+
+	$sorted_hits = array();
+	foreach ( $hits as $index => $hit ) {
+		$hit_id = 0;
+		if ( is_object( $hit ) && isset( $hit->ID ) ) {
+			$hit_id = (int) $hit->ID;
+		} elseif ( is_numeric( $hit ) ) {
+			$hit_id = (int) $hit;
+		}
+
+		$rank = 1; // Unknown/non-product: keep between in-stock and out-of-stock.
+		if ( $hit_id > 0 ) {
+			$hit_post_type = get_post_type( $hit_id );
+			if ( 'product' === $hit_post_type || 'product_variation' === $hit_post_type ) {
+				$stock_status = get_post_meta( $hit_id, '_stock_status', true );
+				$rank         = ( 'outofstock' === $stock_status ) ? 2 : 0;
+			}
+		}
+
+		$sorted_hits[] = array(
+			'rank'  => $rank,
+			'index' => $index,
+			'hit'   => $hit,
+		);
+	}
+
+	usort(
+		$sorted_hits,
+		function( $a, $b ) {
+			if ( $a['rank'] === $b['rank'] ) {
+				return $a['index'] <=> $b['index'];
+			}
+			return $a['rank'] <=> $b['rank'];
+		}
+	);
+
+	$filter_data[0] = array_map(
+		function( $item ) {
+			return $item['hit'];
+		},
+		$sorted_hits
+	);
+
+	return $filter_data;
 }
 
 if ( 'on' === get_option( 'relevanssi_index_sku' ) ) {
