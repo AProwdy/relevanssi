@@ -316,16 +316,12 @@ function relevanssi_woocommerce_prioritize_in_stock_hits( $filter_data, $query )
 		return $filter_data;
 	}
 
-	if ( ! $query instanceof WP_Query || ! $query->is_search() ) {
+	if ( ! $query instanceof WP_Query ) {
 		return $filter_data;
 	}
 
-	$post_type = $query->get( 'post_type' );
-	if ( is_array( $post_type ) ) {
-		if ( ! in_array( 'product', $post_type, true ) && ! in_array( 'product_variation', $post_type, true ) ) {
-			return $filter_data;
-		}
-	} elseif ( ! empty( $post_type ) && 'product' !== $post_type && 'product_variation' !== $post_type ) {
+	// Relevanssi custom queries may not always set is_search(), but they do set 's'.
+	if ( ! $query->is_search() && '' === trim( (string) $query->get( 's' ) ) ) {
 		return $filter_data;
 	}
 
@@ -347,8 +343,13 @@ function relevanssi_woocommerce_prioritize_in_stock_hits( $filter_data, $query )
 		if ( $hit_id > 0 ) {
 			$hit_post_type = get_post_type( $hit_id );
 			if ( 'product' === $hit_post_type || 'product_variation' === $hit_post_type ) {
-				$stock_status = get_post_meta( $hit_id, '_stock_status', true );
-				$rank         = ( 'outofstock' === $stock_status ) ? 1 : 0;
+				$product = wc_get_product( $hit_id );
+				if ( $product ) {
+					$rank = $product->is_in_stock() ? 0 : 1;
+				} else {
+					$stock_status = get_post_meta( $hit_id, '_stock_status', true );
+					$rank         = ( 'outofstock' === $stock_status ) ? 1 : 0;
+				}
 			}
 		}
 
