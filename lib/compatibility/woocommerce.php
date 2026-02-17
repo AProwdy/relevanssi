@@ -343,12 +343,12 @@ function relevanssi_woocommerce_prioritize_in_stock_hits( $filter_data, $query )
 			$hit_id = (int) $hit;
 		}
 
-		$rank = 1; // Unknown/non-product: keep between in-stock and out-of-stock.
+		$rank = 2; // Unknown/non-product: keep after product stock-status groups.
 		if ( $hit_id > 0 ) {
 			$hit_post_type = get_post_type( $hit_id );
 			if ( 'product' === $hit_post_type || 'product_variation' === $hit_post_type ) {
 				$stock_status = get_post_meta( $hit_id, '_stock_status', true );
-				$rank         = ( 'outofstock' === $stock_status ) ? 2 : 0;
+				$rank         = ( 'outofstock' === $stock_status ) ? 1 : 0;
 			}
 		}
 
