@@ -213,7 +213,7 @@ function relevanssi_menu() {
 		 * @param string The capability required. Default 'manage_options'.
 		 */
 		apply_filters( 'relevanssi_options_capability', 'manage_options' ),
-		$relevanssi_variables['file'],
+		'relevanssi',
 		'relevanssi_options'
 	);
 	add_dashboard_page(
@@ -464,7 +464,7 @@ function relevanssi_action_links( $links ) {
 		$root = 'relevanssi-premium';
 	}
 	$relevanssi_links = array(
-		'<a href="' . admin_url( 'options-general.php?page=' . $root . '/relevanssi.php' ) . '">' . __( 'Settings', 'relevanssi' ) . '</a>',
+		'<a href="' . admin_url( 'options-general.php?page=' . $root ) . '">' . __( 'Settings', 'relevanssi' ) . '</a>',
 	);
 	return array_merge( $relevanssi_links, $links );
 }
