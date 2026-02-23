@@ -345,10 +345,21 @@ function relevanssi_woocommerce_prioritize_in_stock_hits( $filter_data, $query )
 			if ( 'product' === $hit_post_type || 'product_variation' === $hit_post_type ) {
 				$product = wc_get_product( $hit_id );
 				if ( $product ) {
-					$rank = $product->is_in_stock() ? 0 : 1;
+					if ( $product->managing_stock() ) {
+						$qty  = (float) $product->get_stock_quantity();
+						$rank = ( $qty > 0 ) ? 0 : 1;
+					} else {
+						$rank = $product->is_in_stock() ? 0 : 1;
+					}
 				} else {
-					$stock_status = get_post_meta( $hit_id, '_stock_status', true );
-					$rank         = ( 'outofstock' === $stock_status ) ? 1 : 0;
+					$manage_stock = get_post_meta( $hit_id, '_manage_stock', true );
+					if ( 'yes' === $manage_stock ) {
+						$qty  = (float) get_post_meta( $hit_id, '_stock', true );
+						$rank = ( $qty > 0 ) ? 0 : 1;
+					} else {
+						$stock_status = get_post_meta( $hit_id, '_stock_status', true );
+						$rank         = ( 'outofstock' === $stock_status ) ? 1 : 0;
+					}
 				}
 			}
 		}
