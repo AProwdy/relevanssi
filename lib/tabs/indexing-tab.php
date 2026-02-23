@@ -103,7 +103,7 @@ function relevanssi_indexing_tab() {
 		$taxterm_count = get_option( 'relevanssi_taxterm_count', 0 );
 	}
 
-	$this_page  = '?page=' . plugin_basename( $relevanssi_variables['file'] );
+	$this_page  = '?page=relevanssi';
 	$update_url = wp_nonce_url( $this_page . '&rlv_tab=indexing&update_counts=1', 'update_counts' );
 
 	?>

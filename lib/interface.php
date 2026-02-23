@@ -169,7 +169,7 @@ function relevanssi_options_form() {
 
 	printf( "<input type='hidden' name='rlv_tab' value='%s' />", esc_attr( $active_tab ) );
 
-	$this_page = '?page=' . plugin_basename( $relevanssi_variables['file'] );
+	$this_page = '?page=relevanssi';
 
 	$tabs = array(
 		array(
@@ -316,6 +316,7 @@ function relevanssi_add_admin_scripts( $hook ) {
 		'toplevel_page_relevanssi/relevanssi',
 		'settings_page_relevanssi/relevanssi',
 		'dashboard_page_relevanssi/relevanssi',
+		'settings_page_relevanssi',
 		'dashboard_page_relevanssi_admin_search',
 		'dashboard_page_relevanssi_user_searches',
 		// AP-relevanssi fork hooks

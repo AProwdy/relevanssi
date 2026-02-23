@@ -17,7 +17,7 @@
  */
 function relevanssi_overview_tab() {
 	global $relevanssi_variables;
-	$this_page = '?page=' . plugin_basename( $relevanssi_variables['file'] );
+	$this_page = '?page=relevanssi';
 	?>
 	<h2><?php esc_html_e( 'Welcome to Relevanssi!', 'relevanssi' ); ?></h2>
 
