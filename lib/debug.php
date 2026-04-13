@@ -24,7 +24,8 @@ function relevanssi_is_debug(): bool {
 	if ( defined( 'RELEVANSSI_DEBUG' ) && RELEVANSSI_DEBUG ) {
 		$debug = true;
 	}
-	if ( isset( $_REQUEST['relevanssi_debug'] ) && 'on' === get_option( 'relevanssi_debugging_mode' ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+	if ( isset( $_REQUEST['relevanssi_debug'] ) && 'on' === get_option( 'relevanssi_debugging_mode' ) // phpcs:ignore WordPress.Security.NonceVerification
+		&& current_user_can( apply_filters( 'relevanssi_options_capability', 'manage_options' ) ) ) {
 		$debug = true;
 	}
 	return $debug;

@@ -395,8 +395,9 @@ function relevanssi_add_admin_scripts( $hook ) {
 	wp_localize_script( 'relevanssi_admin_js', 'relevanssi', $localizations );
 
 	$nonce = array(
-		'indexing_nonce'  => wp_create_nonce( 'relevanssi_indexing_nonce' ),
-		'searching_nonce' => wp_create_nonce( 'relevanssi_admin_search_nonce' ),
+		'indexing_nonce'       => wp_create_nonce( 'relevanssi_indexing_nonce' ),
+		'searching_nonce'      => wp_create_nonce( 'relevanssi_admin_search_nonce' ),
+		'custom_fields_nonce'  => wp_create_nonce( 'relevanssi_custom_fields_nonce' ),
 	);
 
 	if ( ! RELEVANSSI_PREMIUM ) {

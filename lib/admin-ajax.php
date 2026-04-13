@@ -284,10 +284,10 @@ function relevanssi_admin_search_format_posts( $posts, $total, $offset, $query )
 				$edit_url = get_edit_term_link( $post->term_id, $post->post_type );
 			}
 		}
-		$title     = sprintf( '<a href="%1$s">%2$s %3$s</a>', $permalink, $post->post_title, $post_type );
+		$title     = sprintf( '<a href="%1$s">%2$s %3$s</a>', esc_url( $permalink ), esc_html( $post->post_title ), esc_html( $post_type ) );
 		$edit_link = '';
 		if ( current_user_can( 'edit_post', $post->ID ) ) {
-			$edit_link = sprintf( '(<a href="%1$s">%2$s %3$s</a>)', $edit_url, __( 'Edit', 'relevanssi' ), $post_type );
+			$edit_link = sprintf( '(<a href="%1$s">%2$s %3$s</a>)', esc_url( $edit_url ), __( 'Edit', 'relevanssi' ), esc_html( $post_type ) );
 		}
 
 		$pinning_buttons = '';
@@ -298,10 +298,14 @@ function relevanssi_admin_search_format_posts( $posts, $total, $offset, $query )
 			list( $pinning_buttons, $pinned ) = relevanssi_admin_search_pinning( $post, $query );
 		}
 
+		$safe_blog_name = esc_html( $blog_name );
+		$safe_excerpt   = wp_kses_post( $post->post_excerpt );
+		$safe_score     = esc_html( $post->relevance_score );
+
 		$post_element = <<<EOH
-<li>$blog_name <strong>$title</strong> $edit_link $pinning_buttons <br />
-$post->post_excerpt<br />
-$score_label $post->relevance_score $pinned</li>
+<li>$safe_blog_name <strong>$title</strong> $edit_link $pinning_buttons <br />
+$safe_excerpt<br />
+$score_label $safe_score $pinned</li>
 EOH;
 		/**
 		 * Filters the admin search results element.
@@ -347,7 +351,7 @@ function relevanssi_admin_search_debugging_info( $query ) {
 						$result = '';
 						if ( is_array( $row ) ) {
 							foreach ( $row as $row_key => $row_value ) {
-								$result .= "<li>$row_key: $row_value</li>";
+								$result .= '<li>' . esc_html( $row_key ) . ': ' . esc_html( (string) $row_value ) . '</li>';
 							}
 						}
 						return $result;
@@ -469,6 +473,10 @@ function relevanssi_update_counts() {
  * @uses relevanssi_list_all_indexed_custom_fields()
  */
 function relevanssi_list_custom_fields() {
+	check_ajax_referer( 'relevanssi_custom_fields_nonce', 'security' );
+	if ( ! current_user_can( apply_filters( 'relevanssi_options_capability', 'manage_options' ) ) ) {
+		wp_die( -1, 403 );
+	}
 	$response = relevanssi_list_all_indexed_custom_fields();
 
 	echo wp_json_encode( $response );

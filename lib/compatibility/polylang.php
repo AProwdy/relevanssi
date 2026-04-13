@@ -192,8 +192,8 @@ function relevanssi_get_language_term_taxonomy_id( $locale ) {
 	);
 	$term_id   = 0;
 	foreach ( $languages as $row ) {
-		$description = unserialize( $row->description ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions
-		if ( $description['locale'] === $locale ) {
+		$description = unserialize( $row->description, array( 'allowed_classes' => false ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions
+		if ( is_array( $description ) && isset( $description['locale'] ) && $description['locale'] === $locale ) {
 			$term_id = $row->term_taxonomy_id;
 			break;
 		}
