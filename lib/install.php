@@ -71,6 +71,9 @@ function _relevanssi_install() {
 	global $relevanssi_variables;
 
 	add_option( 'relevanssi_admin_search', 'off' );
+	add_option( 'relevanssi_autocomplete_enabled', 'off' );
+	add_option( 'relevanssi_autocomplete_max_results', '5' );
+	add_option( 'relevanssi_autocomplete_min_chars', '3' );
 	add_option( 'relevanssi_bg_col', '#ffaf75' );
 	add_option( 'relevanssi_cat', '0' );
 	add_option( 'relevanssi_class', 'relevanssi-query-term' );
