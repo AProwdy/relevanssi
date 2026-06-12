@@ -13,7 +13,8 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
-/docs/
+/docs/*
+!/docs/superpowers/
 
 # IDEs
 .vscode/
@@ -26,3 +27,6 @@ Thumbs.db
 
 # Scripts
 sync_svn.sh
+
+# Brainstorming companion (local mockups, not part of the spec)
+.superpowers/brainstorm/
