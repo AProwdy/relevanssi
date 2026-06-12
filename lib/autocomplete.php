@@ -55,21 +55,27 @@ function relevanssi_autocomplete_format_result( $post ) {
  *
  * @param string $q           The search query.
  * @param int    $max_results Maximum number of suggestions to return.
+ * @param string $post_type   Restrict results to this post type, or '' for all
+ *                             indexed post types.
  *
  * @return array Formatted suggestions, see relevanssi_autocomplete_format_result().
  */
-function relevanssi_autocomplete_get_results( string $q, int $max_results ) {
+function relevanssi_autocomplete_get_results( string $q, int $max_results, string $post_type = '' ) {
 	$max_results = max( 1, $max_results );
 
-	$query = new WP_Query();
-	$query->parse_query(
-		array(
-			's'              => $q,
-			'relevanssi'     => true,
-			'posts_per_page' => $max_results,
-			'post_status'    => 'publish',
-		)
+	$args = array(
+		's'              => $q,
+		'relevanssi'     => true,
+		'posts_per_page' => $max_results,
+		'post_status'    => 'publish',
 	);
+
+	if ( '' !== $post_type ) {
+		$args['post_type'] = $post_type;
+	}
+
+	$query = new WP_Query();
+	$query->parse_query( $args );
 	$posts = relevanssi_do_query( $query );
 
 	return array_map( 'relevanssi_autocomplete_format_result', $posts );
@@ -107,6 +113,14 @@ function relevanssi_autocomplete_ajax() {
 
 	$q = isset( $_REQUEST['q'] ) && is_string( $_REQUEST['q'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['q'] ) ) : '';
 
+	$post_type = '';
+	if ( isset( $_REQUEST['post_type'] ) && is_string( $_REQUEST['post_type'] ) ) {
+		$requested_post_type = sanitize_key( wp_unslash( $_REQUEST['post_type'] ) );
+		if ( post_type_exists( $requested_post_type ) ) {
+			$post_type = $requested_post_type;
+		}
+	}
+
 	if ( ! relevanssi_autocomplete_should_search( $q ) ) {
 		wp_send_json_success(
 			array(
@@ -122,7 +136,7 @@ function relevanssi_autocomplete_ajax() {
 	wp_send_json_success(
 		array(
 			'query'   => $q,
-			'results' => relevanssi_autocomplete_get_results( $q, $max_results ),
+			'results' => relevanssi_autocomplete_get_results( $q, $max_results, $post_type ),
 		)
 	);
 }

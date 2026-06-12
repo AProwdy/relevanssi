@@ -130,6 +130,44 @@ class AutocompleteTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test relevanssi_autocomplete_get_results() with a post type restriction.
+	 */
+	public function test_relevanssi_autocomplete_get_results_with_post_type() {
+		update_option( 'relevanssi_index_post_types', array( 'post', 'page', 'product' ) );
+
+		relevanssi_truncate_index();
+
+		$product_id = self::factory()->post->create(
+			array(
+				'post_type'    => 'product',
+				'post_title'   => 'Flourish Excel Aquarium Plant Supplement',
+				'post_content' => 'Flourish Excel is a source of bioavailable carbon for aquarium plants.',
+				'post_status'  => 'publish',
+			)
+		);
+
+		$page_id = self::factory()->post->create(
+			array(
+				'post_type'    => 'page',
+				'post_title'   => 'Flourish Excel Usage Guide',
+				'post_content' => 'Flourish Excel dosing instructions for aquarium plants.',
+				'post_status'  => 'publish',
+			)
+		);
+
+		relevanssi_build_index( false, false, 200, false );
+
+		$results = relevanssi_autocomplete_get_results( 'Flourish Excel', 5, 'product' );
+
+		$this->assertNotEmpty( $results );
+
+		$titles = wp_list_pluck( $results, 'title' );
+
+		$this->assertContains( get_the_title( $product_id ), $titles );
+		$this->assertNotContains( get_the_title( $page_id ), $titles );
+	}
+
+	/**
 	 * Test relevanssi_autocomplete_should_search().
 	 */
 	public function test_relevanssi_autocomplete_should_search() {

@@ -1,3 +1,6 @@
+= 4.27.19 =
+* Minor fix: The search autocomplete now restricts its suggestions to products when used on a search form that targets products only (e.g. the WooCommerce product search widget), instead of suggesting all post types.
+
 = 4.27.18 =
 * New feature: Added anti-scraping search protection. Known AI bots and scrapers (GPTBot, ChatGPT-User, ClaudeBot, Claude-Web, Google-Extended, PerplexityBot, CCBot) are now blocked from searching, and searches with a cross-domain referrer are blocked to deter unauthorized scraping.
 
