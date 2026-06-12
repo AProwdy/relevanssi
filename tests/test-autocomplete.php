@@ -101,4 +101,31 @@ class AutocompleteTest extends WP_UnitTestCase {
 		$this->assertNotNull( $result['thumbnail'] );
 		$this->assertSame( get_the_post_thumbnail_url( $product_id, 'thumbnail' ), $result['thumbnail'] );
 	}
+
+	/**
+	 * Test relevanssi_autocomplete_get_results().
+	 */
+	public function test_relevanssi_autocomplete_get_results() {
+		relevanssi_truncate_index();
+
+		$matching_id = self::factory()->post->create(
+			array(
+				'post_title'   => 'Seachem Prime Water Conditioner',
+				'post_content' => 'Seachem Prime removes chlorine and chloramine from tap water.',
+				'post_status'  => 'publish',
+			)
+		);
+
+		relevanssi_build_index( false, false, 200, false );
+
+		$results = relevanssi_autocomplete_get_results( 'Seachem Prime', 5 );
+
+		$this->assertNotEmpty( $results );
+
+		$titles = wp_list_pluck( $results, 'title' );
+		$urls   = wp_list_pluck( $results, 'url' );
+
+		$this->assertContains( get_the_title( $matching_id ), $titles );
+		$this->assertContains( get_permalink( $matching_id ), $urls );
+	}
 }

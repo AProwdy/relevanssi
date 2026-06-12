@@ -44,3 +44,33 @@ function relevanssi_autocomplete_format_result( $post ) {
 		'thumbnail' => $thumbnail,
 	);
 }
+
+/**
+ * Runs a Relevanssi search for autocomplete suggestions.
+ *
+ * Uses the same WP_Query + relevanssi_do_query() pattern as
+ * relevanssi_admin_search(), so results are filtered through the exact
+ * same restrictions (excluded posts/categories, indexed post types,
+ * language scoping) as a normal search.
+ *
+ * @param string $q           The search query.
+ * @param int    $max_results Maximum number of suggestions to return.
+ *
+ * @return array Formatted suggestions, see relevanssi_autocomplete_format_result().
+ */
+function relevanssi_autocomplete_get_results( string $q, int $max_results ) {
+	$max_results = max( 1, $max_results );
+
+	$query = new WP_Query();
+	$query->parse_query(
+		array(
+			's'              => $q,
+			'relevanssi'     => true,
+			'posts_per_page' => $max_results,
+			'post_status'    => 'publish',
+		)
+	);
+	$posts = relevanssi_do_query( $query );
+
+	return array_map( 'relevanssi_autocomplete_format_result', $posts );
+}
