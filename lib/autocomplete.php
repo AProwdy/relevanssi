@@ -74,3 +74,91 @@ function relevanssi_autocomplete_get_results( string $q, int $max_results ) {
 
 	return array_map( 'relevanssi_autocomplete_format_result', $posts );
 }
+
+add_action( 'wp_ajax_relevanssi_autocomplete', 'relevanssi_autocomplete_ajax' );
+add_action( 'wp_ajax_nopriv_relevanssi_autocomplete', 'relevanssi_autocomplete_ajax' );
+add_action( 'wp_enqueue_scripts', 'relevanssi_autocomplete_enqueue_scripts' );
+
+/**
+ * Decides whether an autocomplete request should run a search.
+ *
+ * @param string $q The search query string.
+ *
+ * @return bool True if the feature is enabled and the query is long enough.
+ */
+function relevanssi_autocomplete_should_search( string $q ) {
+	if ( 'on' !== get_option( 'relevanssi_autocomplete_enabled' ) ) {
+		return false;
+	}
+
+	$min_chars = (int) get_option( 'relevanssi_autocomplete_min_chars', 3 );
+
+	return mb_strlen( $q ) >= $min_chars;
+}
+
+/**
+ * Handles the relevanssi_autocomplete AJAX action.
+ *
+ * Registered for both logged-in and logged-out users, since search must
+ * work for anonymous visitors.
+ */
+function relevanssi_autocomplete_ajax() {
+	check_ajax_referer( 'relevanssi_autocomplete', 'nonce' );
+
+	$q = isset( $_REQUEST['q'] ) && is_string( $_REQUEST['q'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['q'] ) ) : '';
+
+	if ( ! relevanssi_autocomplete_should_search( $q ) ) {
+		wp_send_json_success(
+			array(
+				'query'   => $q,
+				'results' => array(),
+			)
+		);
+		return;
+	}
+
+	$max_results = (int) get_option( 'relevanssi_autocomplete_max_results', 5 );
+
+	wp_send_json_success(
+		array(
+			'query'   => $q,
+			'results' => relevanssi_autocomplete_get_results( $q, $max_results ),
+		)
+	);
+}
+
+/**
+ * Enqueues the autocomplete script and style on the front end.
+ *
+ * Only runs when the feature is enabled in settings and we're not in the
+ * admin area.
+ *
+ * @global array $relevanssi_variables The global Relevanssi variables array.
+ */
+function relevanssi_autocomplete_enqueue_scripts() {
+	if ( is_admin() ) {
+		return;
+	}
+
+	if ( 'on' !== get_option( 'relevanssi_autocomplete_enabled' ) ) {
+		return;
+	}
+
+	global $relevanssi_variables;
+	$plugin_dir_url = plugin_dir_url( $relevanssi_variables['file'] );
+	$version        = $relevanssi_variables['plugin_version'];
+
+	wp_enqueue_style( 'relevanssi-autocomplete', $plugin_dir_url . 'lib/autocomplete.css', array(), $version );
+	wp_enqueue_script( 'relevanssi-autocomplete', $plugin_dir_url . 'lib/autocomplete.js', array(), $version, true );
+
+	wp_localize_script(
+		'relevanssi-autocomplete',
+		'relevanssiAutocomplete',
+		array(
+			'ajaxUrl'    => admin_url( 'admin-ajax.php' ),
+			'nonce'      => wp_create_nonce( 'relevanssi_autocomplete' ),
+			'minChars'   => (int) get_option( 'relevanssi_autocomplete_min_chars', 3 ),
+			'maxResults' => (int) get_option( 'relevanssi_autocomplete_max_results', 5 ),
+		)
+	);
+}

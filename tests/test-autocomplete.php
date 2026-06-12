@@ -128,4 +128,19 @@ class AutocompleteTest extends WP_UnitTestCase {
 		$this->assertContains( get_the_title( $matching_id ), $titles );
 		$this->assertContains( get_permalink( $matching_id ), $urls );
 	}
+
+	/**
+	 * Test relevanssi_autocomplete_should_search().
+	 */
+	public function test_relevanssi_autocomplete_should_search() {
+		update_option( 'relevanssi_autocomplete_enabled', 'off' );
+		update_option( 'relevanssi_autocomplete_min_chars', 3 );
+
+		$this->assertFalse( relevanssi_autocomplete_should_search( 'seachem' ) );
+
+		update_option( 'relevanssi_autocomplete_enabled', 'on' );
+
+		$this->assertFalse( relevanssi_autocomplete_should_search( 'se' ) );
+		$this->assertTrue( relevanssi_autocomplete_should_search( 'sea' ) );
+	}
 }
