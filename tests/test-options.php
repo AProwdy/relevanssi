@@ -214,6 +214,37 @@ EOT;
 	}
 
 	/**
+	 * Test update_relevanssi_options for the autocomplete tab.
+	 */
+	public function test_update_relevanssi_options_autocomplete() {
+		$request = array(
+			'rlv_tab'                              => 'autocomplete',
+			'relevanssi_autocomplete_enabled'      => 'on',
+			'relevanssi_autocomplete_min_chars'    => '4',
+			'relevanssi_autocomplete_max_results'  => '7',
+		);
+
+		update_relevanssi_options( $request );
+
+		$this->assertEquals( 'on', get_option( 'relevanssi_autocomplete_enabled' ) );
+		$this->assertEquals( 4, get_option( 'relevanssi_autocomplete_min_chars' ) );
+		$this->assertEquals( 7, get_option( 'relevanssi_autocomplete_max_results' ) );
+
+		// Unchecking the checkbox turns it off; zero values fall back to defaults.
+		$request = array(
+			'rlv_tab'                              => 'autocomplete',
+			'relevanssi_autocomplete_min_chars'    => '0',
+			'relevanssi_autocomplete_max_results'  => '0',
+		);
+
+		update_relevanssi_options( $request );
+
+		$this->assertEquals( 'off', get_option( 'relevanssi_autocomplete_enabled' ) );
+		$this->assertEquals( 3, get_option( 'relevanssi_autocomplete_min_chars' ) );
+		$this->assertEquals( 5, get_option( 'relevanssi_autocomplete_max_results' ) );
+	}
+
+	/**
 	 * Test relevanssi_process_weights_and_indexing.
 	 */
 	public function test_relevanssi_process_weights_and_indexing() {

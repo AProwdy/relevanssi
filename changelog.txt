@@ -1,3 +1,6 @@
+= 4.27.17 =
+* New feature: Added an opt-in search autocomplete (live suggestions). When enabled on the new "Autocomplete" settings tab, a dropdown of matching titles (with thumbnails for products) appears under search boxes site-wide as visitors type. No price or stock information is shown.
+
 = 4.25.0 =
 * New feature: New filter hook `relevanssi_index_excerpt` can be used to control which excerpts are indexed and which are not.
 * Minor fix: The `tribe_events` shortcode is now blocked in indexing, as it caused problems.

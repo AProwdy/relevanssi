@@ -94,6 +94,12 @@ function update_relevanssi_options( array $request ) {
 		relevanssi_turn_off_options( $request, array( 'relevanssi_debugging_mode' ) );
 	}
 
+	if ( 'autocomplete' === $request['rlv_tab'] ) {
+		relevanssi_turn_off_options( $request, array( 'relevanssi_autocomplete_enabled' ) );
+		relevanssi_update_intval( $request, 'relevanssi_autocomplete_min_chars', true, 3 );
+		relevanssi_update_intval( $request, 'relevanssi_autocomplete_max_results', true, 5 );
+	}
+
 	relevanssi_process_weights_and_indexing( $request );
 	relevanssi_process_synonym_options( $request );
 	relevanssi_process_punctuation_options( $request );
@@ -106,6 +112,7 @@ function update_relevanssi_options( array $request ) {
 	// The values control the autoloading.
 	$options = array(
 		'relevanssi_admin_search'            => false,
+		'relevanssi_autocomplete_enabled'    => true,
 		'relevanssi_bg_col'                  => true,
 		'relevanssi_class'                   => true,
 		'relevanssi_css'                     => true,

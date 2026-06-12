@@ -201,6 +201,13 @@ function relevanssi_options_form() {
 			'save'     => true,
 		),
 		array(
+			'slug'     => 'autocomplete',
+			'name'     => __( 'Autocomplete', 'relevanssi' ),
+			'require'  => 'tabs/autocomplete-tab.php',
+			'callback' => 'relevanssi_autocomplete_tab',
+			'save'     => true,
+		),
+		array(
 			'slug'     => 'logging',
 			'name'     => __( 'Logging', 'relevanssi' ),
 			'require'  => 'tabs/logging-tab.php',
