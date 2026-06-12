@@ -50,4 +50,55 @@ class AutocompleteTest extends WP_UnitTestCase {
 		$this->assertStringContainsString( "name='relevanssi_autocomplete_max_results'", $output );
 		$this->assertStringContainsString( "value='8'", $output );
 	}
+
+	/**
+	 * Test relevanssi_autocomplete_format_result().
+	 */
+	public function test_relevanssi_autocomplete_format_result() {
+		$page_id = self::factory()->post->create(
+			array(
+				'post_type'  => 'page',
+				'post_title' => 'About Us',
+			)
+		);
+
+		$result = relevanssi_autocomplete_format_result( get_post( $page_id ) );
+
+		$this->assertSame( 'About Us', $result['title'] );
+		$this->assertSame( get_permalink( $page_id ), $result['url'] );
+		$this->assertSame( 'other', $result['type'] );
+		$this->assertNull( $result['thumbnail'] );
+		$this->assertArrayNotHasKey( 'price', $result );
+		$this->assertArrayNotHasKey( 'stock', $result );
+
+		$product_id = self::factory()->post->create(
+			array(
+				'post_type'  => 'product',
+				'post_title' => 'Seachem Prime 500ml',
+			)
+		);
+
+		$result = relevanssi_autocomplete_format_result( get_post( $product_id ) );
+
+		$this->assertSame( 'Seachem Prime 500ml', $result['title'] );
+		$this->assertSame( 'product', $result['type'] );
+		$this->assertNull( $result['thumbnail'] );
+		$this->assertArrayNotHasKey( 'price', $result );
+		$this->assertArrayNotHasKey( 'stock', $result );
+
+		$attachment_id = self::factory()->attachment->create_object(
+			array(
+				'file'           => 'thumbnail.jpg',
+				'post_parent'    => $product_id,
+				'post_mime_type' => 'image/jpeg',
+				'post_type'      => 'attachment',
+			)
+		);
+		set_post_thumbnail( $product_id, $attachment_id );
+
+		$result = relevanssi_autocomplete_format_result( get_post( $product_id ) );
+
+		$this->assertNotNull( $result['thumbnail'] );
+		$this->assertSame( get_the_post_thumbnail_url( $product_id, 'thumbnail' ), $result['thumbnail'] );
+	}
 }
