@@ -1,3 +1,6 @@
+= 4.27.18 =
+* New feature: Added anti-scraping search protection. Known AI bots and scrapers (GPTBot, ChatGPT-User, ClaudeBot, Claude-Web, Google-Extended, PerplexityBot, CCBot) are now blocked from searching, and searches with a cross-domain referrer are blocked to deter unauthorized scraping.
+
 = 4.27.17 =
 * New feature: Added an opt-in search autocomplete (live suggestions). When enabled on the new "Autocomplete" settings tab, a dropdown of matching titles (with thumbnails for products) appears under search boxes site-wide as visitors type. No price or stock information is shown.
 
