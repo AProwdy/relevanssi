@@ -1,3 +1,6 @@
+= 4.27.22 =
+* Minor fix: The search autocomplete no longer leaves the theme's older live-search results panel visible behind its own suggestion dropdown (most noticeable on mobile).
+
 = 4.27.20 =
 * Performance: Search autocomplete results are now cached for one minute to speed up repeated/backspace-retype queries, and the front end now cancels any in-flight autocomplete request when a newer keystroke is typed.
 
