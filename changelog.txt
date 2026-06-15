@@ -1,3 +1,6 @@
+= 4.27.23 =
+* Minor fix: The search autocomplete now shows a small loading spinner in the search box while a suggestion request is in progress, so it's clear a search is happening.
+
 = 4.27.22 =
 * Minor fix: The search autocomplete no longer leaves the theme's older live-search results panel visible behind its own suggestion dropdown (most noticeable on mobile).
 

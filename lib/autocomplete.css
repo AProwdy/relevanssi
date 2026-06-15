@@ -2,6 +2,31 @@
 	position: relative;
 }
 
+.relevanssi-autocomplete-spinner {
+	display: none;
+	position: absolute;
+	top: 50%;
+	right: 10px;
+	width: 14px;
+	height: 14px;
+	margin-top: -7px;
+	border: 2px solid rgba(0, 0, 0, 0.15);
+	border-top-color: #2271b1;
+	border-radius: 50%;
+	pointer-events: none;
+	animation: relevanssi-autocomplete-spin 0.6s linear infinite;
+}
+
+.relevanssi-autocomplete-wrapper.relevanssi-autocomplete-loading .relevanssi-autocomplete-spinner {
+	display: block;
+}
+
+@keyframes relevanssi-autocomplete-spin {
+	to {
+		transform: rotate( 360deg );
+	}
+}
+
 /*
  * Themes (e.g. Ziggy's product-ajax-search.js) bind their own live-search
  * dropdown to the same .search-field inputs this autocomplete attaches to.
