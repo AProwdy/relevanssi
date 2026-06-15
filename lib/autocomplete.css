@@ -2,6 +2,17 @@
 	position: relative;
 }
 
+/*
+ * Themes (e.g. Ziggy's product-ajax-search.js) bind their own live-search
+ * dropdown to the same .search-field inputs this autocomplete attaches to.
+ * Both fire on every keystroke and render overlapping result panels, so
+ * once this autocomplete is active, hide the theme's legacy panel to avoid
+ * the duplicate "popup behind the results" effect.
+ */
+.ajax-search-result {
+	display: none !important;
+}
+
 .relevanssi-autocomplete {
 	position: absolute;
 	top: 100%;
