@@ -130,6 +130,33 @@ class AutocompleteTest extends WP_UnitTestCase {
 	}
 
 	/**
+	 * Test that relevanssi_autocomplete_get_results() caches its results.
+	 */
+	public function test_relevanssi_autocomplete_get_results_caches_results() {
+		relevanssi_truncate_index();
+
+		self::factory()->post->create(
+			array(
+				'post_title'   => 'Cached Autocomplete Result',
+				'post_content' => 'Content used to verify autocomplete result caching.',
+				'post_status'  => 'publish',
+			)
+		);
+
+		relevanssi_build_index( false, false, 200, false );
+
+		$first = relevanssi_autocomplete_get_results( 'Cached Autocomplete', 5 );
+		$this->assertNotEmpty( $first );
+
+		// Truncating the index would make a fresh search return nothing,
+		// so a non-empty, identical result here means the cache was used.
+		relevanssi_truncate_index();
+
+		$second = relevanssi_autocomplete_get_results( 'Cached Autocomplete', 5 );
+		$this->assertSame( $first, $second );
+	}
+
+	/**
 	 * Test relevanssi_autocomplete_get_results() with a post type restriction.
 	 */
 	public function test_relevanssi_autocomplete_get_results_with_post_type() {

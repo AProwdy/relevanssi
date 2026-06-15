@@ -1,3 +1,6 @@
+= 4.27.20 =
+* Performance: Search autocomplete results are now cached for one minute to speed up repeated/backspace-retype queries, and the front end now cancels any in-flight autocomplete request when a newer keystroke is typed.
+
 = 4.27.19 =
 * Minor fix: The search autocomplete now restricts its suggestions to products when used on a search form that targets products only (e.g. the WooCommerce product search widget), instead of suggesting all post types.
 

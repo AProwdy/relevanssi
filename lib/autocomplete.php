@@ -53,6 +53,10 @@ function relevanssi_autocomplete_format_result( $post ) {
  * same restrictions (excluded posts/categories, indexed post types,
  * language scoping) as a normal search.
  *
+ * Results are cached in a transient for one minute, keyed on the query,
+ * post type, and result count, so repeated keystrokes (especially the
+ * backspace-and-retype pattern common while typing) skip the search.
+ *
  * @param string $q           The search query.
  * @param int    $max_results Maximum number of suggestions to return.
  * @param string $post_type   Restrict results to this post type, or '' for all
@@ -62,6 +66,13 @@ function relevanssi_autocomplete_format_result( $post ) {
  */
 function relevanssi_autocomplete_get_results( string $q, int $max_results, string $post_type = '' ) {
 	$max_results = max( 1, $max_results );
+
+	$cache_key = 'relevanssi_ac_' . md5( wp_json_encode( array( $q, $max_results, $post_type ) ) );
+
+	$cached_results = get_transient( $cache_key );
+	if ( is_array( $cached_results ) ) {
+		return $cached_results;
+	}
 
 	$args = array(
 		's'              => $q,
@@ -78,7 +89,11 @@ function relevanssi_autocomplete_get_results( string $q, int $max_results, strin
 	$query->parse_query( $args );
 	$posts = relevanssi_do_query( $query );
 
-	return array_map( 'relevanssi_autocomplete_format_result', $posts );
+	$results = array_map( 'relevanssi_autocomplete_format_result', $posts );
+
+	set_transient( $cache_key, $results, MINUTE_IN_SECONDS );
+
+	return $results;
 }
 
 add_action( 'wp_ajax_relevanssi_autocomplete', 'relevanssi_autocomplete_ajax' );
