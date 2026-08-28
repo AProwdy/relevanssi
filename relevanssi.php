@@ -13,7 +13,7 @@
  * Plugin Name: AP Relevanssi
  * Plugin URI: https://www.relevanssi.com/
  * Description: This plugin replaces WordPress search with a relevance-sorting search. Originally developed by Mikko Saari, customized by AP Development Team.
- * Version: 4.27.23
+ * Version: 4.27.24
  * Author: AP Development Team
  * Author URI: https://aquapremium.com.au
  * Text Domain: relevanssi

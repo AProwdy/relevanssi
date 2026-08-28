@@ -19,6 +19,12 @@ add_action( 'relevanssi_indexing_options', 'relevanssi_rankmath_options' );
  *
  * Attaches to the 'relevanssi_do_not_index' filter hook.
  *
+ * WooCommerce products are exempt from this exclusion (see
+ * relevanssi_rankmath_is_exempt_post_type()): products are routinely marked
+ * noindex for SEO (freebie/POS "Merch" items, bundled specials, etc.) while
+ * still needing to be findable through the site's own on-site search, so
+ * Rank Math's noindex setting only affects posts/pages here.
+ *
  * @param boolean $do_not_index True, if the post shouldn't be indexed.
  * @param integer $post_id      The post ID number.
  *
@@ -27,6 +33,9 @@ add_action( 'relevanssi_indexing_options', 'relevanssi_rankmath_options' );
  */
 function relevanssi_rankmath_noindex( $do_not_index, $post_id ) {
 	if ( 'on' !== get_option( 'relevanssi_seo_noindex' ) ) {
+		return $do_not_index;
+	}
+	if ( relevanssi_rankmath_is_exempt_post_type( get_post_type( $post_id ) ) ) {
 		return $do_not_index;
 	}
 	$noindex = get_post_meta( $post_id, 'rank_math_robots', true );
@@ -41,6 +50,7 @@ function relevanssi_rankmath_noindex( $do_not_index, $post_id ) {
  *
  * Adds a MySQL query restriction that blocks posts that have the Rank Math
  * "rank_math_robots" setting set to something that includes "noindex".
+ * WooCommerce products are exempt, see relevanssi_rankmath_noindex().
  *
  * @param array $restriction An array with two values: 'mysql' for the MySQL
  * query restriction to modify, 'reason' for the reason of restriction.
@@ -60,11 +70,46 @@ function relevanssi_rankmath_exclude( $restriction ) {
 		);
 	}
 
-	$restriction['mysql']  .= " AND post.ID NOT IN (SELECT post_id FROM
+	$exempt_post_types = relevanssi_rankmath_exempt_post_types();
+	$exempt_clause      = '';
+	if ( ! empty( $exempt_post_types ) ) {
+		$placeholders  = implode( ', ', array_fill( 0, count( $exempt_post_types ), '%s' ) );
+		$exempt_clause = $wpdb->prepare( "post.post_type IN ($placeholders) OR ", $exempt_post_types ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+	}
+
+	$restriction['mysql']  .= " AND ( $exempt_clause post.ID NOT IN (SELECT post_id FROM
 		$wpdb->postmeta WHERE meta_key = 'rank_math_robots'
-		AND meta_value LIKE '%noindex%' ) ";
-	$restriction['reason'] .= ' Rank Math';
+		AND meta_value LIKE '%noindex%' ) ) ";
+	$restriction['reason'] .= ' Rank Math (except exempt post types)';
 	return $restriction;
+}
+
+/**
+ * Post types exempt from the Rank Math noindex exclusion.
+ *
+ * @return array Post type names, default array( 'product' ).
+ */
+function relevanssi_rankmath_exempt_post_types() {
+	/**
+	 * Filters the post types exempt from Relevanssi's Rank Math noindex
+	 * exclusion. Posts of these types are indexed (and so findable via
+	 * on-site search) even when Rank Math marks them noindex for search
+	 * engines.
+	 *
+	 * @param array Post type names, default array( 'product' ).
+	 */
+	return apply_filters( 'relevanssi_rankmath_noindex_exempt_post_types', array( 'product' ) );
+}
+
+/**
+ * Checks whether a post type is exempt from the Rank Math noindex exclusion.
+ *
+ * @param string $post_type The post type to check.
+ *
+ * @return boolean True, if the post type is exempt.
+ */
+function relevanssi_rankmath_is_exempt_post_type( $post_type ) {
+	return in_array( $post_type, relevanssi_rankmath_exempt_post_types(), true );
 }
 
 /**
@@ -85,6 +130,7 @@ function relevanssi_rankmath_form() {
 				<?php esc_html_e( 'Use Rank Math SEO noindex.', 'relevanssi' ); ?>
 			</label>
 			<p class="description"><?php esc_html_e( 'If checked, Relevanssi will not index posts marked as "No index" in Rank Math SEO settings.', 'relevanssi' ); ?></p>
+			<p class="description"><?php esc_html_e( 'WooCommerce products are exempt from this: noindexed products are still indexed and searchable on-site (filter: relevanssi_rankmath_noindex_exempt_post_types).', 'relevanssi' ); ?></p>
 		</td>
 	</tr>
 	<?php

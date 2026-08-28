@@ -1,3 +1,6 @@
+= 4.27.24 =
+* Bug fix: WooCommerce products marked "noindex" in Rank Math SEO (e.g. $0 freebie/POS "Merch" items, bundled specials) are no longer skipped by Relevanssi's "Use Rank Math SEO noindex" indexing option. Products stay searchable on-site even when hidden from search engines; posts/pages keep respecting the noindex exclusion as before. New filter: `relevanssi_rankmath_noindex_exempt_post_types` (default `array( 'product' )`).
+
 = 4.27.23 =
 * Minor fix: The search autocomplete now shows a small loading spinner in the search box while a suggestion request is in progress, so it's clear a search is happening.
 
