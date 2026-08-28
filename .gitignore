@@ -14,7 +14,9 @@
 ehthumbs.db
 Thumbs.db
 /docs/*
-!/docs/superpowers/
+
+# Test suite (dev-only, not part of the shipped plugin)
+/tests/
 
 # IDEs
 .vscode/
